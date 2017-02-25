@@ -4,7 +4,6 @@ import functions as f
 
 
 if __name__ == '__main__':
-	f.transform(3)
 	mount = Mount()
 	hand = Hand()
 	print mount.mount
