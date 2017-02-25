@@ -1,11 +1,10 @@
 import numpy as np 
 import re
+import functions as f
 
 num_map = {0:'m', 1:'p', 2:'s', 3:'z'}
 chars_map = {1:'e', 2:'s', 3:'w', 4:'n', 5:'z', 6:'f', 7:'b'}
 
-def transform(num):
-	print 1
 
 class Hand:
 	def __init__(self):
@@ -58,20 +57,4 @@ class Mount:
 		self.mount = np.array(range(1,self.N+1)*4)
 		np.random.shuffle(self.mount)
 		self.treasures = [self.mount[-6]]
-
-if __name__ == '__main__':
-	mount = Mount()
-	hand = Hand()
-	print mount.mount
-	print mount.treasures
-
-	hand.insert('123456789m1p1s123z')
-	print hand.N()
-	print 
-
-
-
-
-
-
 

@@ -1,0 +1,50 @@
+日本麻将program
+
+
+•	先实现牌效率的分析函数功能
+
+给定一副13张，分析有哪多少张有效进张；
+给定一副14张，分析打哪一张比较好（何切问题）；
+
+麻将牌类：
+class Mahjong:
++name: {‘1m’,’2m’,…,’9s’, ‘e’,’s’,’w’,’n’,’z’,’f’,’b’}
++value: {1,2,3,…,34}
++type: {‘m’, ‘p’, ‘s’, ‘c’}
+
+手牌类：
+class Hand:
++postitions[34] // [0,1,2,0,0,0,...,1,3,0] an array with length 34
++values[14] // [1,1,2,13,13,13,...,32,34]
++m[9]
++p[9]
++s[9]
++z[7]
+-	tostring()
+-	isReady()
+-	isWinning()
+
+
+牌山类：
+class Mountain:
++currentPosition: int 
++treasure: int // 宝牌
+-	generate()
+-	
+
+牌池类：
+class Pool:
+
+
+
+万:1-9
+饼:10-18
+条:19-27
+风:28-31
+三元:32,33,34
+
+
+
+判断和牌与否
+
+
