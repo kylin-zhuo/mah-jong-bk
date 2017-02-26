@@ -3,7 +3,7 @@ import re
 import functions as f
 
 num_map = {0:'m', 1:'p', 2:'s', 3:'z'}
-chars_map = {1:'e', 2:'s', 3:'w', 4:'n', 5:'z', 6:'f', 7:'b'}
+# chars_map = {1:'e', 2:'s', 3:'w', 4:'n', 5:'z', 6:'f', 7:'b'}
 
 
 class Hand:
@@ -45,6 +45,9 @@ class Hand:
 		self.numbers[num_map[color]][num] -= 1
 
 	def hasWinned(self):
+		return f.hasWinned(self.numbers)
+
+	def hasWaited(self):
 		pass
 
 	
@@ -57,4 +60,16 @@ class Mount:
 		self.mount = np.array(range(1,self.N+1)*4)
 		np.random.shuffle(self.mount)
 		self.treasures = [self.mount[-6]]
+
+if __name__ == '__main__':
+	mount = Mount()
+	hand = Hand()
+	# print mount.mount
+	# print mount.treasures
+	hand.insert('111222999m111p11sz')
+	print hand.N()
+	print hand.numbers
+	print hand.hasWinned()
+	print 
+
 
