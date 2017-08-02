@@ -1,11 +1,11 @@
 import numpy as np 
 import re
-import functions as f
 from collections import Counter
 import itertools
 
 
 COLORS = ['m', 'p', 's', 'z']
+NUMBERS = range(1, 10)
 C2L = {'m': 0, 'p': 1, 's': 2, 'z': 3}
 L2C = {0: 'm', 1: 'p', 2: 's', 3: 'z'}
 HONBA_FEE = 300
@@ -24,6 +24,52 @@ def generate_all_mahjong(shuffled=False, distinct=False):
 
 ALL_MJ = generate_all_mahjong(distinct=False)
 ALL_MJ_DIST = generate_all_mahjong(distinct=True)
+
+
+def func1(vals):
+    for v in vals:
+        if not v:
+            continue
+        if len(v) % 3 != 0:
+            return False
+        else:
+            if not func2(sorted(v)):
+                return False
+    return True
+
+
+# detect the Fertigkeit of same color
+def func2(v):
+    # detect the triple first
+    # v = sorted(v)
+    if len(v) == 0:
+        return True
+    elif len(v) == 3:
+        return len(set(v)) == 1 or (v[0] + 1 == v[1] == v[2] - 1)
+
+    elif len(v) in (6, 9, 12):
+        triples = [key for key, val in Counter(v).items() if val >= 3]
+        if len(triples) == len(v) / 3:
+            return True
+        else:
+            flag = False
+            for t in triples:
+                if t == v[0] or t == v[-1]:
+                    flag = True
+                    for _ in range(3):
+                        v.remove(t)
+            if flag:
+                return func2(v)
+            else:
+                minv = min(v)
+                if minv + 1 in v and minv + 2 in v:
+                    for m in minv, minv + 1, minv + 2:
+                        v.remove(m)
+                    return func2(v)
+                else:
+                    return False
+    else:
+        return False
 
 
 class Mahjong:
@@ -65,11 +111,10 @@ class Hand:
                  from_str=None
                  ):
         """
+        :param uuid: the unique ID of the hand
         :param num: 13 or 14
         :param is_clear: has any exposure?
-        :param mahjongs: total mahjongs in hand
-        :param exposure: the exposed part of mahjongs
-        :param hidden: the still hidden part of mahjongs
+        :param from_str: create the hand from an input string
         """
         self.uuid = uuid
         self.num = num
@@ -77,24 +122,34 @@ class Hand:
         self.mahjongs = []  # the part that can do the in/out
         self.exposure = []  # max length: 4
         self.hidden = []  # the part for the hidden kan
+        # the most important part of core:
         self.mpsz = dict({'m': [], 'p': [], 's': [], 'z': []})  # the part that can do the in/out
         if from_str:
             self.from_str(from_str)
 
-    def from_str(self, str):
-        tmp = re.split(r"[mpsz]", str)[:-1]
-        values = map(lambda x: map(lambda y: int(y), list(x)), tmp)
+    def update(self):
+        self.mahjongs = list(itertools.chain(*[map(lambda x: str(x) + ch, self.mpsz[ch]) for ch in COLORS]))
+
+    def get_num(self):
+        return self.num
+
+    def from_str(self, string):
+        tmp = re.split(r"[mpsz]", string)[:-1]
+        values = list(map(lambda x: list(map(lambda y: int(y), list(x))), tmp))
         keys = COLORS
         self.mpsz = dict(zip(keys, values))
+        self.num = len(string) - 4
+        self.update()
 
     # Output the hand tiles in a formatted way. 123m456p789s11234z
     def __str__(self):
         return ''.join([
                 ''.join(
+                    sorted(
                     [
                         m[0] for m in self.mahjongs
                         if m[1] == ch
-                    ]
+                    ])
                 )
                 + ch
                 for ch in COLORS])
@@ -127,27 +182,26 @@ class Hand:
             self.mahjongs += mjs
             for mj in mjs: self.mpsz[mj[1]].append(int(mj[0]))
             self.num += len(mjs)
-        elif type(mjs) == str:
+        elif type(mjs) in (str, np.string_):
             self.mahjongs.append(mjs)
             self.mpsz[mjs[1]].append(int(mjs[0]))
             self.num += 1
         else:
-            pass
+            return
 
-    def discard(self, mjs, pool=None):
+    def discard(self, mjs):
         # when pool == None: transfer from mahjongs to hidden or exposure
         # when pool exists: discard to the pool
         if type(mjs) == list:
             for mj in mjs: 
-                self.mpsz[mj[1]].append(int(mj[0]))
+                self.mpsz[mj[1]].remove(int(mj[0]))
                 self.mahjongs.remove(mj)
-        elif type(mjs) == str or type(mjs) == np.string_:
+            self.num -= len(mjs)
+        elif type(mjs) in (str, np.string_):
             self.mahjongs.remove(mjs)
             self.mpsz[mjs[1]].remove(int(mjs[0]))
             self.num -= 1
         else:
-            pass
-        if pool:
             pass
 
     def pon(self, mj):
@@ -180,100 +234,61 @@ class Hand:
         else:
             pass
 
-    # return the 
+    # return all the possible eyese
     def get_eyes(self):
         eyes = [[str(k)+ch for k, v in Counter(self.mpsz[ch]).items() if v >= 2] for ch in COLORS]
         return list(itertools.chain(*eyes))
 
+    # temporarily remove the eye (for a trial)
     def remove_eye(self, eye):
-        for _ in range(2):
-            self.mpsz[eye[1]].remove(int(eye[0]))
+        self.discard([eye, eye])
 
+    # append the eye back
     def append_eye(self, eye):
-        for _ in range(2):
-            self.mpsz[eye[1]].append(int(eye[0]))
+        self.take([eye, eye])
 
     def win(self):
-
         # firstly not consider the special winning pattern
         # 1) find all the possibilities of doubles
         eyes = self.get_eyes()
         if not eyes:
             return False
 
-        def func1(vals):
-            for v in vals:
-                if not v:
-                    continue
-                if len(v) % 3 != 0:
-                    return False
-                else:
-                    if not func2(sorted(v)):
-                        return False
-            return True
-
-        # a single color
-        def func2(v):
-            # detect the triple first
-            # v = sorted(v)
-            if len(v) == 0:
-                return True
-            elif len(v) == 3:
-                return len(set(v)) == 1 or (v[0] + 1 == v[1] == v[2] - 1)
-
-            # elif len(v) == 6:
-            #     triples = [key for key, val in Counter(v).items() if val >= 3]
-            #     if len(triples) == 2:
-            #         return True
-            #     elif len(triples) == 1 and (triples[0] in (v[0], v[-1])):
-            #         for _ in range(3):
-            #             v.remove(triples[0])
-            #         return func2(v)
-            #     else:  # no triples
-            #         minv = min(v)
-            #         if minv + 1 in v and minv + 2 in v:
-            #             for m in minv, minv+1, minv+2:
-            #                 v.remove(m)
-            #             return func2(v)
-            #         else:
-            #             return False
-
-            elif len(v) in (6, 9, 12):
-                triples = [key for key, val in Counter(v).items() if val >= 3]
-                if len(triples) == len(v) / 3:
-                    return True
-                else:
-                    flag = False
-                    for t in triples:
-                        if t == v[0] or t == v[-1]:
-                            flag = True
-                            for _ in range(3):
-                                v.remove(t)
-                    if flag:
-                        return func2(v)
-                    else:
-                        minv = min(v)
-                        if minv + 1 in v and minv + 2 in v:
-                            for m in minv, minv+1, minv+2:
-                                v.remove(m)
-                            return func2(v)
-                        else:
-                            return False
-            else:
-                return False
-
         for eye in eyes:
             self.remove_eye(eye)
             vals = self.mpsz.copy().values()
+
             if func1(vals):
+                self.append_eye(eye)
                 return True
-            self.append_eye(eye)
+            else:
+                self.append_eye(eye)
 
         return False
 
     def tenpai(self):
 
-        pass
+        if self.num != 13:
+            return False
+        res = []
+        for c in COLORS:
+            if len(self.mpsz[c]) % 3 == 0:
+                continue
+            for n in NUMBERS:
+                mj = str(n) + c
+                self.take(mj)
+                if self.win():
+                    res.append(mj)
+                self.discard(mj)
+        return (True if res else False), res
+
+    def tenpai_step_1(self):
+        res = []
+        for c in COLORS:
+            if not self.mpsz[c]:
+                continue
+            for n in NUMBERS:
+                mj = str(n) + c
 
 
 class Player:
@@ -283,7 +298,8 @@ class Player:
                  location=None,
                  is_dealer=None,
                  score=None,
-                 uuid=None):
+                 uuid=None,
+                 pool=None):
         """
         :param name
         :param location: {'e', 's', 'w', 'n'}
@@ -298,7 +314,7 @@ class Player:
         self.hands = Hand(uuid=uuid)
         self.uuid = uuid
         self.next = None
-        self.pool = None
+        self.pool = pool
 
     def assign_pool(self, pool):
         self.pool = pool
@@ -306,11 +322,24 @@ class Player:
     def take(self, mjs):
         self.hands.take(mjs)
 
-    def discard(self, mjs):
+    def discard(self, mjs, pool=None):
         self.hands.discard(mjs)
+        # discard into the pool
+        if pool:
+            # specified by the location
+            pool.discard[self.location] += mjs
 
     def add_score(self, s):
         self.score += s
+
+    def can_pon(self, mj):
+        return self.hands.can_pon(mj)
+
+    def can_chi(self, mj):
+        return self.hands.can_chi(mj)
+
+    def can_kan(self, mj):
+        return self.hands.can_kan(mj)
 
     # define the dynamic actions: pon, chi, kan, richi, win(tsumo, ron)
     def pon(self, mj):
@@ -342,7 +371,7 @@ class Player:
 
 class Pool:
 
-    def __init__(self, chan=1):
+    def __init__(self, chan=None):
 
         self.num = 0
         self.discard = {'e': [], 's': [], 'w': [], 'n': []}
@@ -351,6 +380,18 @@ class Pool:
         self.honba = 0
         self.chan = chan
 
+    def set_chan(self, player):
+        self.chan = player
+
+    def get_exposure(self, location):
+        n = {'e': 0, 's': 1, 'w': 2, 'n': 3}[location]
+        p = self.chan
+        while n > 0:
+            p = p.next
+            n -= 1
+        return p.hands.exposure
+
+    # refresh the pool when a game has ended
     def refresh(self, ryuukyoku=False, renchan=False):
         if ryuukyoku:
             self.score_left = self.honba * HONBA_FEE + self.n_richi * RICHI_FEE
@@ -358,7 +399,8 @@ class Pool:
             self.honba += 1
         else:
             self.honba = 0
-            self.chan = self.chan + 1 if self.chan < 4 else 1
+            # self.chan = self.chan + 1 if self.chan < 4 else 1
+            self.chan = self.chan.next
 
         self.num = 0
         self.discard = {'e': [], 's': [], 'w': [], 'n': []}
@@ -409,21 +451,42 @@ def distribute(_mountain, start_player):
     # players[0].take(mj)
 
 
+from Tkinter import *
+
+
+class Application(Frame):
+    def say_hi(self):
+        print "hi there, everyone!"
+
+    def createWidgets(self):
+        self.QUIT = Button(self)
+        self.QUIT["text"] = "QUIT"
+        self.QUIT["fg"]   = "red"
+        self.QUIT["command"] =  self.quit
+
+        self.QUIT.pack({"side": "left"})
+
+        self.hi_there = Button(self)
+        self.hi_there["text"] = "Hello",
+        self.hi_there["command"] = self.say_hi
+
+        self.hi_there.pack({"side": "left"})
+
+    def __init__(self, master=None):
+        Frame.__init__(self, master)
+        self.pack()
+        self.createWidgets()
+
+
 if __name__ == '__main__':
 
-    # p1, p2, p3, p4 = initialize_players()
-    # mountain = initialize_mountain()
-    # distribute(mountain, p1)
+    m = initialize_mountain()
+    p1, p2, p3, p4 = initialize_players()
 
-    # p1.discard(p1.hands.mahjongs[0])
-    # print p1.hands
-    # p1.take('3z')
-    # print p1.hands
-    # p1.discard(p1.hands.mahjongs[0])
-    # print p1.hands
+    p1.hands.from_str('356m69p14668s3467z')
+    p2.hands.from_str('259m378p3s233444z')
+    p3.hands.from_str('11299m1578p147s5z')
+    p4.hands.from_str('34568m459p18s157z')
 
-    print generate_all_mahjong(distinct=True, shuffled=True)
 
-    # p1 = Player(uuid=805)
-    # p1.hands.from_str('111m222p233334s22z')
-    # print p1.win()
+    print p1.hands, p2.hands, p3.hands, p4.hands
