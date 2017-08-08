@@ -290,6 +290,26 @@ class Hand:
             for n in NUMBERS:
                 mj = str(n) + c
 
+    def sort_mpsz(self):
+        for ch in COLORS:
+            self.mpsz[ch].sort()
+
+    # get the number of isolated mahjongs
+    def isolated(self):
+        self.sort_mpsz()
+        res = []
+        for ch in 'm', 'p', 's':
+            tmp, s = self.mpsz[ch], set()
+            for dif in np.where(np.diff(tmp) <= 2)[0]:
+            	s.add(dif)
+            	s.add(dif + 1)
+            res += [str(tmp[p]) + ch for p in (set(range(len(tmp))) - s)]
+        ctr = Counter(self.mpsz['z'])
+        for c in ctr:
+        	if ctr[c] < 2:
+        		res.append(str(c) + 'z')
+        return res
+
 
 class Player:
 
@@ -367,6 +387,7 @@ class Player:
 
     def tenpai(self):
         return self.hands.tenpai()
+
 
 
 class Pool:
@@ -480,13 +501,17 @@ class Application(Frame):
 
 if __name__ == '__main__':
 
-    m = initialize_mountain()
-    p1, p2, p3, p4 = initialize_players()
 
-    p1.hands.from_str('356m69p14668s3467z')
-    p2.hands.from_str('259m378p3s233444z')
-    p3.hands.from_str('11299m1578p147s5z')
-    p4.hands.from_str('34568m459p18s157z')
+	def count():
+
+	    m = initialize_mountain()
+	    p1, p2, p3, p4 = initialize_players()
+	    distribute(m, p1)
+
+	    return np.min(map(lambda x: len(x), [p1.hands.isolated(), p2.hands.isolated(), p3.hands.isolated(), p4.hands.isolated()]))
+
+	for i in range(100):
+		print count()
 
 
-    print p1.hands, p2.hands, p3.hands, p4.hands
+
