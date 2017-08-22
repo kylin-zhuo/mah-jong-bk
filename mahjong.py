@@ -26,8 +26,10 @@ ALL_MJ = generate_all_mahjong(distinct=False)
 ALL_MJ_DIST = generate_all_mahjong(distinct=True)
 
 
+# detect the Fertigkeit of all the mahjong set
 def func1(vals):
-    for v in vals:
+    # vals: list[list]
+    for v in vals[:-1]:
         if not v:
             continue
         if len(v) % 3 != 0:
@@ -35,13 +37,20 @@ def func1(vals):
         else:
             if not func2(sorted(v)):
                 return False
-    return True
+
+    if func2(vals[-1], True):
+        return True
+    else:
+        return False
 
 
-# detect the Fertigkeit of same color
-def func2(v):
+# detect the Fertigkeit of same color (except Z)
+def func2(v, z=False):
     # detect the triple first
     # v = sorted(v)
+    if z:
+        return len(v) == 3 * len(set(v))
+
     if len(v) == 0:
         return True
     elif len(v) == 3:
@@ -71,7 +80,7 @@ def func2(v):
     else:
         return False
 
-
+# The class of a single mahjong
 class Mahjong:
 
     def __init__(self, string, direction='e', status=None, hold_by=1):
@@ -95,10 +104,17 @@ class Mountain:
         self.pointer = 0
         self.next = self.mahjongs[self.pointer]
 
+    # take multiple mahjongs, especially in the distribution phase
     def take(self, num):
         res = list(self.mahjongs[self.pointer: self.pointer + num])
         self.pointer += num
         return res
+
+    # take a single mahjong, especially in the playing phase
+    def take(self):
+        ret = self.mahjongs[self.pointer]
+        self.pointer += 1
+        return ret
 
 
 # the set at hand
@@ -256,7 +272,8 @@ class Hand:
 
         for eye in eyes:
             self.remove_eye(eye)
-            vals = self.mpsz.copy().values()
+            cp = self.mpsz.copy()
+            vals = [cp['m'], cp['p'], cp['s'], cp['z']]
 
             if func1(vals):
                 self.append_eye(eye)
@@ -266,21 +283,43 @@ class Hand:
 
         return False
 
-    def tenpai(self):
+    def tenpai(self, step_from=0):
 
-        if self.num != 13:
-            return False
-        res = []
-        for c in COLORS:
-            if len(self.mpsz[c]) % 3 == 0:
-                continue
-            for n in NUMBERS:
-                mj = str(n) + c
-                self.take(mj)
-                if self.win():
-                    res.append(mj)
-                self.discard(mj)
-        return (True if res else False), res
+        if step_from == 0:
+
+            if self.num != 13:
+                return False
+            res = []
+            for c in COLORS:
+                if len(self.mpsz[c]) % 3 == 0:
+                    continue
+                for n in NUMBERS:
+                    mj = str(n) + c
+                    self.take(mj)
+                    if self.win():
+                        res.append(mj)
+                    self.discard(mj)
+            # return (True if res else False), res
+            return res
+
+        else:
+            res = []
+            for c in COLORS:
+                if not self.mpsz[c]:
+                    continue
+                for n1 in NUMBERS:
+                    mj_add = str(n1) + c
+                    self.take(mj_add)
+                    for mj_del in self.mahjongs:
+                        self.discard(mj_del)
+                        if self.tenpai(step_from-1):
+                            res.append(mj_add)
+                            self.take(mj_del)
+                            break
+                        self.take(mj_del)
+                    self.discard(mj_add)
+            return res
+
 
     def tenpai_step_1(self):
         res = []
@@ -301,13 +340,13 @@ class Hand:
         for ch in 'm', 'p', 's':
             tmp, s = self.mpsz[ch], set()
             for dif in np.where(np.diff(tmp) <= 2)[0]:
-            	s.add(dif)
-            	s.add(dif + 1)
+                s.add(dif)
+                s.add(dif + 1)
             res += [str(tmp[p]) + ch for p in (set(range(len(tmp))) - s)]
         ctr = Counter(self.mpsz['z'])
         for c in ctr:
-        	if ctr[c] < 2:
-        		res.append(str(c) + 'z')
+            if ctr[c] < 2:
+                res.append(str(c) + 'z')
         return res
 
 
@@ -387,7 +426,6 @@ class Player:
 
     def tenpai(self):
         return self.hands.tenpai()
-
 
 
 class Pool:
@@ -472,46 +510,10 @@ def distribute(_mountain, start_player):
     # players[0].take(mj)
 
 
-from Tkinter import *
-
-
-class Application(Frame):
-    def say_hi(self):
-        print "hi there, everyone!"
-
-    def createWidgets(self):
-        self.QUIT = Button(self)
-        self.QUIT["text"] = "QUIT"
-        self.QUIT["fg"]   = "red"
-        self.QUIT["command"] =  self.quit
-
-        self.QUIT.pack({"side": "left"})
-
-        self.hi_there = Button(self)
-        self.hi_there["text"] = "Hello",
-        self.hi_there["command"] = self.say_hi
-
-        self.hi_there.pack({"side": "left"})
-
-    def __init__(self, master=None):
-        Frame.__init__(self, master)
-        self.pack()
-        self.createWidgets()
-
-
 if __name__ == '__main__':
 
-
-	def count():
-
-	    m = initialize_mountain()
-	    p1, p2, p3, p4 = initialize_players()
-	    distribute(m, p1)
-
-	    return np.min(map(lambda x: len(x), [p1.hands.isolated(), p2.hands.isolated(), p3.hands.isolated(), p4.hands.isolated()]))
-
-	for i in range(100):
-		print count()
-
-
-
+    hand = Hand()
+    hand.from_str("12345678mp123s45z")
+    print hand.tenpai()
+    print hand.tenpai(1)
+    print hand
