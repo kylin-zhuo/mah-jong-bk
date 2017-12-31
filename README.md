@@ -1,2 +1,3 @@
-# Programs of simulating the playing and analysis of MahJong (in Japanese rules)
+# Mahjong Engine v1.0 (Chinese GB, Japanese)
 
+![UI Layout]("img/default.jpg")
