@@ -51,6 +51,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\Essential.cs" />
+     <Compile Include="Assets\Scripts\Hand.cs" />
+     <Compile Include="Assets\Scripts\HandController.cs" />
+     <Compile Include="Assets\Scripts\Meld.cs" />
+     <Compile Include="Assets\Scripts\Tile.cs" />
+     <Compile Include="Assets\Scripts\TileController.cs" />
+     <Compile Include="Assets\Scripts\Wall.cs" />
+     <Compile Include="Assets\Scripts\WallController.cs" />
      <Compile Include="Assets\tiles.cs" />
  <Reference Include="UnityEngine.UIAutomation">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UIAutomation/UnityEngine.UIAutomation.dll</HintPath>
