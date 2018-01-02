@@ -20,7 +20,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4003370732033466}
   - component: {fileID: 212815921862970466}
-  - component: {fileID: 114636496624864080}
   - component: {fileID: 61333708402126370}
   - component: {fileID: 50095170536586748}
   m_Layer: 0
@@ -88,20 +87,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.0001, y: 0.0001}
   m_EdgeRadius: 0
---- !u!114 &114636496624864080
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1895721997583076}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e7df94b2ecf34913b2f57d46a1312ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  frontTile: {fileID: 21300000, guid: 5e8fe2b89d2744185afb984283fcb3ae, type: 3}
-  backTile: {fileID: 21300000, guid: bbe72bc22f0a347f2af2acc81827852d, type: 3}
-  name: 
 --- !u!212 &212815921862970466
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -136,7 +121,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 5e8fe2b89d2744185afb984283fcb3ae, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 814de14808c8b4285a39f135e7683913, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

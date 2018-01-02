@@ -20,12 +20,12 @@ GameObject:
   m_Component:
   - component: {fileID: 4940711258298084}
   - component: {fileID: 212165992112680020}
-  - component: {fileID: 114996973847637472}
   - component: {fileID: 61228442238516510}
   - component: {fileID: 50294439937908278}
+  - component: {fileID: 114697081447834614}
   m_Layer: 0
   m_Name: 1s
-  m_TagString: Untagged
+  m_TagString: s
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -88,7 +88,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.0001, y: 0.0001}
   m_EdgeRadius: 0
---- !u!114 &114996973847637472
+--- !u!114 &114697081447834614
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -96,12 +96,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1617593717923716}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e7df94b2ecf34913b2f57d46a1312ae, type: 3}
+  m_Script: {fileID: 11500000, guid: 688144f34a9c94c02872152a3a991273, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  frontTile: {fileID: 21300000, guid: 99505ffbbff9848a984360eea5bb4991, type: 3}
-  backTile: {fileID: 21300000, guid: bbe72bc22f0a347f2af2acc81827852d, type: 3}
-  name: 
+  tileName: 1s
+  backTile: {fileID: 21300000, guid: 8fa99d4590f0f4333b81250812e1cd2a, type: 3}
+  frontTile: {fileID: 21300000, guid: 1c859b4847aff4cbc938bde3d6330e57, type: 3}
 --- !u!212 &212165992112680020
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -136,7 +136,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 99505ffbbff9848a984360eea5bb4991, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1c859b4847aff4cbc938bde3d6330e57, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

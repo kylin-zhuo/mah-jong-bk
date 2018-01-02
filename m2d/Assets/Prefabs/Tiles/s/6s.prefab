@@ -20,9 +20,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4934282914721992}
   - component: {fileID: 212567007910581588}
-  - component: {fileID: 114385385691614580}
   - component: {fileID: 61646676995473212}
   - component: {fileID: 50405501399635576}
+  - component: {fileID: 114092176564824800}
   m_Layer: 0
   m_Name: 6s
   m_TagString: Untagged
@@ -88,7 +88,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.0001, y: 0.0001}
   m_EdgeRadius: 0
---- !u!114 &114385385691614580
+--- !u!114 &114092176564824800
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -96,12 +96,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1365676915587888}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e7df94b2ecf34913b2f57d46a1312ae, type: 3}
+  m_Script: {fileID: 11500000, guid: 688144f34a9c94c02872152a3a991273, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  frontTile: {fileID: 21300000, guid: ae61b48eb4ff24e89b1a4ed6013d0aed, type: 3}
-  backTile: {fileID: 21300000, guid: bbe72bc22f0a347f2af2acc81827852d, type: 3}
-  name: 
+  tileName: 
+  backTile: {fileID: 0}
+  frontTile: {fileID: 0}
 --- !u!212 &212567007910581588
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -136,7 +136,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: ae61b48eb4ff24e89b1a4ed6013d0aed, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bc33648c783eb46929be8fc3f45214e7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

@@ -1,66 +1,39 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using UnityEngine;
 
-namespace Mahjong
-{
-    class Hand
-    {
-        private List<Tile> collection;
-        private List<Meld> melds;
+public class Hand : MonoBehaviour {
 
-        private Wall wall;
+	// Store the hands 
 
-        public Hand()
-        {
-            wall = new Wall();
-            collection = new List<Tile>();
-            melds = new List<Meld>();
-        }
+	public List<GameObject> tiles;
+	public List<List<GameObject>> exposures;
 
-        public void GetFromWall()
-        {
-            collection.Add(wall.GetTile());
-        }
+	public void addTile (GameObject tile){
+		
 
-        public void Sort()
-        {
-            collection.Sort();
-        }
+		Vector3 temp;
+		temp.x = -527 + i * 84;
+		temp.y = -1024;
+		temp.z = -10;
 
-        public Tile GetTile(int index)
-        {
-            return collection[index];
-        }
+		tiles.Add (Instantiat(tile, temp, ));
 
-        public Tile[] isTempai()
-        {
-            List<Tile> result = new List<Tile>();
-            if (melds.Count == 0) {
-                List<Tile> temp = collection;
-                temp.Sort();
-                //check for pairs
-                int pairs = 0;
-                for (int i = 0; i < temp.Count; i++)
-                {
-                    if (i < temp.Count - 1 && collection[i] == collection[i + 1])
-                    {
-                        pairs++;
-                        i++;
-                    }
-                    else
-                        result.Add(collection[i]);
-                }
-                if (pairs == 6)
-                    return result.ToArray();
-                else
-                    result.Clear();
-            }
+	}
 
+	public void addTiles(List<GameObject> tiles) {
+		foreach (GameObject tile in tiles) {
+			addTile (tile);
+		}
+	}
 
-
-            return result.ToArray();
-        }
-    }
+	// Use this for initialization
+	void Start () {
+		
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		
+	}
 }
