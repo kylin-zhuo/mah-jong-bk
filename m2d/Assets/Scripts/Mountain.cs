@@ -159,22 +159,10 @@ public class Mountain : MonoBehaviour {
 	}
 
 
-	int i = 0;
+	
 	// Update is called once per frame
 	void Update () {
 
-		if (Input.GetKeyDown(KeyCode.Space)) {
 
-//			GameObject.Destroy(allBacks[position]);
-
-			Vector3 newDisplayPosition;
-			newDisplayPosition.x = -527 + i * 84;
-			newDisplayPosition.y = -1024;
-			newDisplayPosition.z = -10;
-
-			Instantiate(take(), newDisplayPosition, Quaternion.Euler(0,0,0));
-
-			i += 1;
-		}
 	}
 }

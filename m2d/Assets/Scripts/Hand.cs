@@ -6,18 +6,17 @@ public class Hand : MonoBehaviour {
 
 	// Store the hands 
 
-	public List<GameObject> tiles;
-	public List<List<GameObject>> exposures;
+	List<GameObject> tiles = new List<GameObject> ();
+	List<List<GameObject>> exposures = new List<List<GameObject>> ();
+
+	public int leftCoordinate = -527;
+	public int num;
+	string location;
 
 	public void addTile (GameObject tile){
-		
 
-		Vector3 temp;
-		temp.x = -527 + i * 84;
-		temp.y = -1024;
-		temp.z = -10;
-
-		tiles.Add (Instantiat(tile, temp, ));
+		tiles.Add (tile);
+		num += 1;
 
 	}
 
