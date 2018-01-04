@@ -14,7 +14,7 @@ public class Mountain : MonoBehaviour {
 
 	private int start;
 	private int position = 0;
-	private int last = 143;
+//	private int last = 143;
 
 
 	public GameObject take() {
@@ -50,17 +50,10 @@ public class Mountain : MonoBehaviour {
 			allFronts.Add (obj);
 		}
 
-//		Debug.Log (allFronts.Count);
-//		Debug.Log (allFronts [1].name);
-//
-//		for (int i = 0; i < 10; i++) {
-//			Debug.Log (allFronts [i].name);
-//		}
-
 		Shuffle(allFronts);
 
 	}
-
+		
 
 	void Initialize() {
 
@@ -147,9 +140,7 @@ public class Mountain : MonoBehaviour {
 			allBacks.Add (tileObject);
 
 		}
-
 	}
-
 
 	// Use this for initialization
 	void Start () {
@@ -159,10 +150,8 @@ public class Mountain : MonoBehaviour {
 	}
 
 
-	
 	// Update is called once per frame
 	void Update () {
-
 
 	}
 }

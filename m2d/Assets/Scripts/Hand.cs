@@ -7,17 +7,19 @@ public class Hand : MonoBehaviour {
 	// Store the hands 
 
 	List<GameObject> tiles = new List<GameObject> ();
-	List<List<GameObject>> exposures = new List<List<GameObject>> ();
+//	List<List<GameObject>> exposures = new List<List<GameObject>> ();
 
 	public int leftCoordinate = -527;
 	public int num;
 	string location;
 
-	public void addTile (GameObject tile){
+	public GameObject getTile(int i) {
+		return tiles [i];
+	}
 
+	public void addTile (GameObject tile) {
 		tiles.Add (tile);
 		num += 1;
-
 	}
 
 	public void addTiles(List<GameObject> tiles) {

@@ -6,8 +6,6 @@ public class GameManager : MonoBehaviour {
 
 
 	public Mountain mountain;
-	public Hand hand;
-
 	public Player[] players;
 
 	// Use this for initialization
@@ -17,23 +15,52 @@ public class GameManager : MonoBehaviour {
 //		Debug.Log (hand.tiles.Count);
 		
 	}
-	
+
+	int np = 0;
+
 	// Update is called once per frame
 	void Update () {
 
 		if (Input.GetKeyDown(KeyCode.Space)) {
-
-//			distribute (mountain, players[0], 4);
 			initializeHand(mountain);
+//			Debug.Log (players [0].getTile (6).transform.position.x);
+//			Debug.Log (players [0].getTile (6).transform.position.y);
+			players [0].sortTiles ();
+			players [1].sortTiles ();
+			players [2].sortTiles ();
+			players [3].sortTiles ();
+
+			Debug.Log (players [0].getTile (6).GetComponentInParent<Player>().name);
 		}
 
+		if (Input.GetKeyDown (KeyCode.A)) {
+//			GameObject t = players [1].getTile (5);
+//			Debug.Log (t.transform.position);
+
+			GameObject t = mountain.take();
+			players [np].takeTileInHand (t);
+//			t.transform.Translate(0, 400, 0);
+//			Debug.Log (t.GetComponentInParent<Player> ().transform.position);
+
+		}
+
+		if (Input.GetKeyDown (KeyCode.B)) {
+
+			GameObject t = players [np].getTile (13);
+			Debug.Log (t.transform.position);
+			players [np].discardTileOutFromHand (t);
+			Debug.Log (t.transform.position);
+			np = (np + 1) % 4;
+
+		}
 	}
+
 
 	// Distribute n tiles to hand
 	void distribute(Mountain mountain, Player player, int n) {
 		for (int i = 0; i < n; i++) {
 			GameObject tile = mountain.take ();
-			player.take (tile);
+			player.initTileInHand (tile);
 		}
 	}
 
@@ -41,19 +68,14 @@ public class GameManager : MonoBehaviour {
 	void initializeHand(Mountain mountain){
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 4; j++) {
-				Player p = players [j];
-				distribute (mountain, p, 4);
+				distribute (mountain, players [j], 4);
 			}
 		}
-
-		for (int i = 0; i < 1; i++) {
-			for (int j = 0; j < 4; j++) {
-				Player p = players [j];
-				distribute (mountain, p, 1);
-			}
+		for (int j = 0; j < 4; j++) {
+			distribute (mountain, players [j], 1);
 		}
-
-		distribute (mountain, players [0], 1);
+//		distribute (mountain, players[0], 1);
 	}
 		
+
 }

@@ -22,7 +22,6 @@ GameObject:
   - component: {fileID: 212753993319973902}
   - component: {fileID: 61664263814680420}
   - component: {fileID: 50652838770217142}
-  - component: {fileID: 114230368704758254}
   m_Layer: 0
   m_Name: 3s
   m_TagString: Untagged
@@ -88,20 +87,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.0001, y: 0.0001}
   m_EdgeRadius: 0
---- !u!114 &114230368704758254
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1487383315949472}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 688144f34a9c94c02872152a3a991273, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tileName: 3s
-  backTile: {fileID: 21300000, guid: 8fa99d4590f0f4333b81250812e1cd2a, type: 3}
-  frontTile: {fileID: 21300000, guid: 3008fd9ebf3e54e7db60a425bb57a60c, type: 3}
 --- !u!212 &212753993319973902
 SpriteRenderer:
   m_ObjectHideFlags: 1
