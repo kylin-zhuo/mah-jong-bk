@@ -12,8 +12,13 @@ HONBA_FEE = 300
 RICHI_FEE = 1000
 
 
-def generate_all_mahjong(shuffled=False, distinct=False):
-
+def generate_all_mahjong(shuffled=True, distinct=False):
+    """
+    The function of generating a set of mahjong tiles
+    :param shuffled: the option to shuffle the tiles
+    :param distinct: create a whole mahjong set (each tile has 4 copies) or only one copy
+    :return:
+    """
     n_numbers, n_colors = range(1, 10), range(1, 8)
     all_mj = np.array([y for x in [
         map(lambda _: str(_) + ch, n_colors if ch == 'z' else n_numbers)
@@ -284,6 +289,10 @@ class Hand:
         return False
 
     def tenpai(self, step_from=0):
+        """
+        :param step_from: the steps from tenpai
+        :return:
+        """
 
         if step_from == 0:
 
@@ -319,7 +328,6 @@ class Hand:
                         self.take(mj_del)
                     self.discard(mj_add)
             return res
-
 
     def tenpai_step_1(self):
         res = []
@@ -513,7 +521,8 @@ def distribute(_mountain, start_player):
 if __name__ == '__main__':
 
     hand = Hand()
-    hand.from_str("12345678mp123s45z")
-    print hand.tenpai()
-    print hand.tenpai(1)
-    print hand
+    hand.from_str("12345678mp13s444z")
+    print(hand.tenpai())
+    print(hand.tenpai(1))
+    print(hand)
+
